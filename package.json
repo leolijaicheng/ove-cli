@@ -1,0 +1,27 @@
+{
+  "name": "ove-cli",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "ove": "ove add",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bin": {
+    "ove": "bin/ove",
+    "ove-add": "bin/ove-add",
+    "ove-delete": "bin/ove-delete",
+    "ove-list": "bin/ove-list"
+  },
+  "devDependencies": {
+    "chalk": "^4.1.0",
+    "commander": "^6.2.0",
+    "inquirer": "^7.3.3",
+    "ora": "^5.1.0",
+    "webpack": "^5.4.0",
+    "webpack-cli": "^4.2.0"
+  }
+}
