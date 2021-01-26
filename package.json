@@ -12,16 +12,29 @@
   "license": "ISC",
   "bin": {
     "ove": "bin/ove",
-    "ove-add": "bin/ove-add",
-    "ove-delete": "bin/ove-delete",
+    "ove init": "bin/ove-init",
     "ove-list": "bin/ove-list"
   },
   "devDependencies": {
     "chalk": "^4.1.0",
     "commander": "^6.2.0",
     "inquirer": "^7.3.3",
-    "ora": "^5.1.0",
+    "ora": "^5.3.0",
     "webpack": "^5.4.0",
     "webpack-cli": "^4.2.0"
+  },
+  "dependencies": {
+    "async": "^3.2.0",
+    "consolidate": "^0.16.0",
+    "download-git-repo": "^3.0.2",
+    "handlebars": "^4.7.6",
+    "metalsmith": "^2.3.0",
+    "minimatch": "^3.0.4",
+    "multimatch": "^5.0.0",
+    "read-metadata": "^1.0.0",
+    "rimraf": "^3.0.2",
+    "tildify": "^2.0.0",
+    "user-home": "^2.0.0",
+    "validate-npm-package-name": "^3.0.0"
   }
 }
