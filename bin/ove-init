@@ -5,14 +5,15 @@ const program = require('commander')
 const exists = require('fs').existsSync
 const path = require('path')
 const ora = require('ora')
+const chalk = require('chalk')
 const home = require('user-home')
 const tildify = require('tildify')
-const chalk = require('chalk')
 const inquirer = require('inquirer')
 const rm = require('rimraf').sync
 const logger = require('../lib/logger')
 const generate = require('../lib/generate')
 const localPath = require('../lib/local-path')
+const checkVersion = require('../lib/check-version')
 
 const isLocalPath = localPath.isLocalPath
 const getTemplatePath = localPath.getTemplatePath
@@ -24,7 +25,6 @@ const getTemplatePath = localPath.getTemplatePath
 program
    .usage('<template-name> [project-name]')
    .option('-c,--clone','use git clone')
-   .option('--offline','use cached template')
 
 /**
  * Help
@@ -52,5 +52,85 @@ function help(){
 
 help()
 
+// settings
+
+let template = program.args[0]
+const hasSlash = template.indexOf('/') > -1
+const rawName = program.args[1]
+const inPlace = !rawName || rawName === '.'
+const name = inPlace ? path.relative('../',process.cwd()) : rawName
+const to = path.resolve(rawName || '.')
+const clone = program.clone || false
+
+console.log('name::',name)
+
+const tmp = path.join(home, '.ove-templates', template.replace(/[\/:]/g, '-'))
+if (program.offline) {
+  console.log(`> Use cached template at ${chalk.yellow(tildify(tmp))}`)
+  template = tmp
+}
+
+
+// padding
+
+if(inPlace || exists(to)){
+    inquirer.prompt([{
+        type:'confirm',
+        message:inPlace 
+           ? 'Generate project in current directory?'
+           : 'Target directory exists.Continue?',
+        name:'ok'
+    }]).then(answers => {
+        if(answers.ok){
+            run()
+        }
+    }).catch(logger.fatal)
+}else{
+    run()
+}
+
+// Check,download and generate the project
+
+function run (){
+    // check if template is local
+    if(isLocalPath(template)){
+        const templatePath = getTemplatePath(template)
+        if(exists(templatePath)){
+            generate(name,templatePath,to,err => {
+                if(err) logger.fatal(err)
+                console.log()
+                logger.success('Generate "%s".',name)
+            })
+        }else{
+            logger.fatal('Local template "%s" not found.',template)
+        }
+    }else{
+        checkVersion(() => {
+            if(!hasSlash && template === 'webpack'){
+               template = 'direct:https://github.com/leolijaicheng/cli-tpl.git'
+            }
+            downloadAndGenerate(template)
+        })
+    }
+}
+
+// Download a generate from a template repo
+
+function downloadAndGenerate(template){
+    const spinner = ora('dowanloading template')
+    spinner.start()
+
+    // Remove if local template exists
+    if(exists(tmp)) rm(tmp)
+    download(template,tmp,{ clone },err => {
+        spinner.stop()
+        if(err)logger.fatal('Failed to download repo ' + template + ':' + err.message.trim())
+        generate(name,tmp,to,err => {
+            if(err)logger.fatal(err)
+            console.log()
+            logger.success('Generate "%s".',name)
+        })
+    })
+}
 
 
