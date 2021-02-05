@@ -25,6 +25,7 @@ const getTemplatePath = localPath.getTemplatePath
 program
    .usage('<template-name> [project-name]')
    .option('-c,--clone','use git clone')
+   .option('-o,--offline','use cached template')
 
 /**
  * Help
@@ -62,7 +63,6 @@ const name = inPlace ? path.relative('../',process.cwd()) : rawName
 const to = path.resolve(rawName || '.')
 const clone = program.clone || false
 
-console.log('name::',name)
 
 const tmp = path.join(home, '.ove-templates', template.replace(/[\/:]/g, '-'))
 if (program.offline) {
@@ -107,7 +107,7 @@ function run (){
     }else{
         checkVersion(() => {
             if(!hasSlash && template === 'webpack'){
-               template = 'direct:https://github.com/leolijaicheng/cli-tpl.git'
+               template = 'direct:https://github.com/leolijaicheng/cli-tpl.git#main'
             }
             downloadAndGenerate(template)
         })
