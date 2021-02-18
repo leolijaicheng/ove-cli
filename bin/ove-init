@@ -107,7 +107,11 @@ function run (){
     }else{
         checkVersion(() => {
             if(!hasSlash && template === 'webpack'){
-               template = 'direct:https://github.com/leolijaicheng/cli-tpl.git#main'
+               if(!clone){
+                   template = 'leolijaicheng/cli-tpl'
+               }else{
+                   template = 'direct:https://github.com/leolijaicheng/cli-tpl.git#main'
+               } 
             }
             downloadAndGenerate(template)
         })
