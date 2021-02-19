@@ -53,6 +53,7 @@ function help(){
 
 help()
 
+
 // settings
 
 let template = program.args[0]
@@ -123,6 +124,7 @@ function run (){
 function downloadAndGenerate(template){
     const spinner = ora('dowanloading template')
     spinner.start()
+
 
     // Remove if local template exists
     if(exists(tmp)) rm(tmp)
